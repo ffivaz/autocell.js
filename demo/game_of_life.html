@@ -10,8 +10,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../src/functions.js"></script>
-    <script src="../src/rules.js"></script>
+    <script src="../src/helpers.js"></script>
+    <script src="../src/initArrays.js"></script>
 
     <script>
 
@@ -26,12 +26,12 @@
         <div class="col-md-3">
             <h4>Menu</h4>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
-                    style="margin: 20px;">Aide
+                    style="margin: 20px;">Help
             </button>
             <div class="text-center" id="rules">
             </div>
             <div>
-                <select id="patternList" title="Choix du motif de départ">
+                <select id="patternList" title="Choose an initial pattern">
                     <option name="glider">glider</option>
                     <option name="bloc">bloc</option>
                     <option name="random">random</option>
@@ -138,103 +138,6 @@
     };
 
     /**
-     * This draws the initial board. Choose a type!
-     */
-    var init = function (type) {
-        switch (type) {
-            case 'blinker':
-                myCells[20][35] = 1;
-                myCells[20][36] = 1;
-                myCells[20][37] = 1;
-                break;
-            case 'bloc':
-                myCells[20][35] = 1;
-                myCells[21][35] = 1;
-                myCells[20][36] = 1;
-                myCells[21][36] = 1;
-                break;
-            case 'toad':
-                myCells[20][35] = 1;
-                myCells[20][36] = 1;
-                myCells[20][37] = 1;
-                myCells[21][34] = 1;
-                myCells[21][35] = 1;
-                myCells[21][36] = 1;
-                break;
-            case 'eight-in-line':
-                myCells[20][35] = 1;
-                myCells[20][36] = 1;
-                myCells[20][37] = 1;
-                myCells[20][38] = 1;
-                myCells[20][39] = 1;
-                myCells[20][40] = 1;
-                myCells[20][41] = 1;
-                myCells[20][42] = 1;
-                break;
-            case 'acorn':
-                myCells[19][34] = 1;
-                myCells[20][36] = 1;
-                myCells[21][33] = 1;
-                myCells[21][34] = 1;
-                myCells[21][37] = 1;
-                myCells[21][38] = 1;
-                myCells[21][39] = 1;
-                break;
-            case 'random':
-                for (var j = 1; j < myCells.length - 1; j++) {
-                    for (var i = 1; i < myCells[j].length - 1; i++) {
-                        myCells[j][i] = Math.round(Math.random());
-                    }
-                }
-                break;
-            case 'glider':
-                myCells[19][34] = 1;
-                myCells[20][35] = 1;
-                myCells[20][36] = 1;
-                myCells[21][34] = 1;
-                myCells[21][35] = 1;
-                break;
-            case 'gosper-glider-gun':
-                myCells[17][35] = 1;
-                myCells[18][33] = 1;
-                myCells[18][35] = 1;
-                myCells[19][23] = 1;
-                myCells[19][24] = 1;
-                myCells[19][31] = 1;
-                myCells[19][32] = 1;
-                myCells[19][45] = 1;
-                myCells[19][46] = 1;
-                myCells[20][22] = 1;
-                myCells[20][26] = 1;
-                myCells[20][31] = 1;
-                myCells[20][32] = 1;
-                myCells[20][45] = 1;
-                myCells[20][46] = 1;
-                myCells[21][11] = 1;
-                myCells[21][12] = 1;
-                myCells[21][21] = 1;
-                myCells[21][27] = 1;
-                myCells[21][31] = 1;
-                myCells[21][32] = 1;
-                myCells[22][11] = 1;
-                myCells[22][12] = 1;
-                myCells[22][21] = 1;
-                myCells[22][25] = 1;
-                myCells[22][27] = 1;
-                myCells[22][28] = 1;
-                myCells[22][33] = 1;
-                myCells[22][35] = 1;
-                myCells[23][21] = 1;
-                myCells[23][27] = 1;
-                myCells[23][35] = 1;
-                myCells[24][22] = 1;
-                myCells[24][26] = 1;
-                myCells[25][23] = 1;
-                myCells[25][24] = 1;
-        }
-    };
-
-    /**
      * Loops through the generations
      */
     var run = function () {
@@ -246,7 +149,7 @@
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext("2d");
 
-    var myCells = createArray();
+    var myCells = createArray(40, 72);
     var initPattern = 'glider';
     if (location.search != '') {
         initPattern = location.search.substring(1); // If there is an URL parameter, initial pattern gets the name after the ?
@@ -258,7 +161,7 @@
         window.location.href = 'game_of_life.html?' + document.getElementById('patternList').value;
     });
 
-    init(initPattern); // There you can choose the initial pattern: acorn, eight-in-line, blinker, etc.
+    initArray(myCells, initPattern); // There you can choose the initial pattern: acorn, eight-in-line, blinker, etc.
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
     canvasDraw(myCells, ctx);
