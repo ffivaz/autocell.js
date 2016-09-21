@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Conway's Game of life demo</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../src/functions.js"></script>
+    <script src="../src/rules.js"></script>
+
+    <script>
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Conway's Game of life demo</h2>
+        </div>
+        <div class="col-md-3">
+            <h4>Menu</h4>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                    style="margin: 20px;">Aide
+            </button>
+            <div class="text-center" id="rules">
+            </div>
+            <div>
+                <select id="patternList" title="Choix du motif de départ">
+                    <option name="glider">glider</option>
+                    <option name="bloc">bloc</option>
+                    <option name="random">random</option>
+                    <option name="blinker">blinker</option>
+                    <option name="acorn">acorn</option>
+                    <option name="eight-in-line">eight-in-line</option>
+                    <option name="toad">toad</option>
+                    <option name="gosper-glider-gun">gosper-glider-gun</option>
+                </select>
+                <button class="btn btn-success" id="startBtn" style="margin: 20px;">Start</button>
+                <br>
+                <button class="btn btn-warning" id="reset" style="margin: 20px;">Reset</button>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>Canvas</h4>
+            <canvas id="canvas" width="800" height="500"></canvas>
+        </div>
+    </div>
+</div>
+<script>
+
+    /**
+     * Creates an array of arrays for the data
+     **/
+    var createArray = function (nrows, ncols) {
+
+        /**
+         * Creates an array for the lines. Using a function is important to avoid linking the lines. I could have used slice(). Maybe.
+         **/
+        var createLine = function (ncols) {
+            var someLine = [];
+
+            for (var i = 0; i < ncols; i++) {
+                someLine.push(0);
+            }
+
+            return someLine;
+        };
+
+        var someCells = [];
+        for (var i = 0; i < nrows; i++) {
+            someCells.push(createLine(ncols));
+        }
+
+        return someCells;
+    };
+
+    /**
+     * Draws (or redraws) the canvas from a array of arrays (cells)
+     **/
+    var canvasDraw = function (cells, context, width, height) {
+
+        var col = 0;
+        cells.forEach(function (line) {
+            var i = 0;
+            line.forEach(function (pixel) {
+                if (pixel == 0) {
+                    context.fillStyle = 'white';
+                    context.fillRect(Math.floor(i * 10) + 0.5, Math.floor(col * 10) + 0.5, Math.floor(17 * 0.5), Math.floor(17 * 0.5));
+                    context.strokeStyle = 'black';
+                    context.strokeRect(Math.floor(i * 10) + 0.5, Math.floor(col * 10) + 0.5, Math.floor(17 * 0.5), Math.floor(17 * 0.5));
+                } else {
+                    context.fillStyle = 'black';
+                    context.fillRect(Math.floor(i * 10) + 0.5, Math.floor(col * 10) + 0.5, Math.floor(17 * 0.5), Math.floor(17 * 0.5));
+                    context.strokeStyle = 'black';
+                    context.strokeRect(Math.floor(i * 10) + 0.5, Math.floor(col * 10) + 0.5, Math.floor(17 * 0.5), Math.floor(17 * 0.5));
+                }
+                i++;
+            });
+            col++;
+        });
+    };
+
+    /**
+     * From Wikipedia, Game of Life rules are:
+     * 1. Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+     * 2. Any live cell with two or three live neighbours lives on to the next generation.
+     * 3. Any live cell with more than three live neighbours dies, as if by over-population.
+     * 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+     */
+    var nextGen = function (cells) {
+        var cellsCopy = arrayClone(cells); //
+        var a = 0;
+        for (var j = 1; j < cellsCopy.length - 1; j++) {
+            for (var i = 1; i < cellsCopy[j].length - 1; i++) {
+                a = cellsCopy[j - 1][i - 1] + cellsCopy[j - 1][i] + cellsCopy[j - 1][i + 1];
+                a = a + cellsCopy[j][i - 1] + cellsCopy[j][i + 1];
+                a = a + cellsCopy[j + 1][i - 1] + cellsCopy[j + 1][i] + cellsCopy[j + 1][i + 1];
+                if (cellsCopy[j][i] == 1 && a < 2) {
+                    cells[j][i] = 0;
+                }
+                if (cellsCopy[j][i] == 1 && (a == 2 || a == 3)) {
+                    cells[j][i] = 1;
+                }
+                if (cellsCopy[j][i] == 1 && a > 3) {
+                    cells[j][i] = 0;
+                }
+                if (cellsCopy[j][i] == 0 && a == 3) {
+                    cells[j][i] = 1;
+                }
+            }
+        }
+    };
+
+    /**
+     * This draws the initial board. Choose a type!
+     */
+    var init = function (type) {
+        switch (type) {
+            case 'blinker':
+                myCells[20][35] = 1;
+                myCells[20][36] = 1;
+                myCells[20][37] = 1;
+                break;
+            case 'bloc':
+                myCells[20][35] = 1;
+                myCells[21][35] = 1;
+                myCells[20][36] = 1;
+                myCells[21][36] = 1;
+                break;
+            case 'toad':
+                myCells[20][35] = 1;
+                myCells[20][36] = 1;
+                myCells[20][37] = 1;
+                myCells[21][34] = 1;
+                myCells[21][35] = 1;
+                myCells[21][36] = 1;
+                break;
+            case 'eight-in-line':
+                myCells[20][35] = 1;
+                myCells[20][36] = 1;
+                myCells[20][37] = 1;
+                myCells[20][38] = 1;
+                myCells[20][39] = 1;
+                myCells[20][40] = 1;
+                myCells[20][41] = 1;
+                myCells[20][42] = 1;
+                break;
+            case 'acorn':
+                myCells[19][34] = 1;
+                myCells[20][36] = 1;
+                myCells[21][33] = 1;
+                myCells[21][34] = 1;
+                myCells[21][37] = 1;
+                myCells[21][38] = 1;
+                myCells[21][39] = 1;
+                break;
+            case 'random':
+                for (var j = 1; j < myCells.length - 1; j++) {
+                    for (var i = 1; i < myCells[j].length - 1; i++) {
+                        myCells[j][i] = Math.round(Math.random());
+                    }
+                }
+                break;
+            case 'glider':
+                myCells[19][34] = 1;
+                myCells[20][35] = 1;
+                myCells[20][36] = 1;
+                myCells[21][34] = 1;
+                myCells[21][35] = 1;
+                break;
+            case 'gosper-glider-gun':
+                myCells[17][35] = 1;
+                myCells[18][33] = 1;
+                myCells[18][35] = 1;
+                myCells[19][23] = 1;
+                myCells[19][24] = 1;
+                myCells[19][31] = 1;
+                myCells[19][32] = 1;
+                myCells[19][45] = 1;
+                myCells[19][46] = 1;
+                myCells[20][22] = 1;
+                myCells[20][26] = 1;
+                myCells[20][31] = 1;
+                myCells[20][32] = 1;
+                myCells[20][45] = 1;
+                myCells[20][46] = 1;
+                myCells[21][11] = 1;
+                myCells[21][12] = 1;
+                myCells[21][21] = 1;
+                myCells[21][27] = 1;
+                myCells[21][31] = 1;
+                myCells[21][32] = 1;
+                myCells[22][11] = 1;
+                myCells[22][12] = 1;
+                myCells[22][21] = 1;
+                myCells[22][25] = 1;
+                myCells[22][27] = 1;
+                myCells[22][28] = 1;
+                myCells[22][33] = 1;
+                myCells[22][35] = 1;
+                myCells[23][21] = 1;
+                myCells[23][27] = 1;
+                myCells[23][35] = 1;
+                myCells[24][22] = 1;
+                myCells[24][26] = 1;
+                myCells[25][23] = 1;
+                myCells[25][24] = 1;
+        }
+    };
+
+    /**
+     * Loops through the generations
+     */
+    var run = function () {
+        nextGen(myCells);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
+        canvasDraw(myCells, ctx);
+    };
+
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext("2d");
+
+    var myCells = createArray();
+    var initPattern = 'glider';
+    if (location.search != '') {
+        initPattern = location.search.substring(1); // If there is an URL parameter, initial pattern gets the name after the ?
+        // Change selector content if URL parameter not null
+        document.getElementById('patternList').value = initPattern;
+    }
+
+    document.getElementById('patternList').addEventListener('change', function () {
+        window.location.href = 'game_of_life.html?' + document.getElementById('patternList').value;
+    });
+
+    init(initPattern); // There you can choose the initial pattern: acorn, eight-in-line, blinker, etc.
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
+    canvasDraw(myCells, ctx);
+
+    var myTimer;
+    document.getElementById('startBtn').addEventListener('click', function () {
+        if (document.getElementById('startBtn').innerHTML == 'Start') {
+            myTimer = setInterval(function () {
+                run();
+            }, 500);
+            document.getElementById('startBtn').innerHTML = 'Stop';
+            document.getElementById('startBtn').className = 'btn btn-danger';
+        } else {
+            clearInterval(myTimer);
+            document.getElementById('startBtn').innerHTML = 'Start';
+            document.getElementById('startBtn').className = 'btn btn-success';
+        }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+        if (document.getElementById('startBtn').innerHTML == 'Stop') {
+            clearInterval(myTimer);
+            document.getElementById('startBtn').innerHTML = 'Start';
+            document.getElementById('startBtn').className = 'btn btn-success';
+        }
+        myCells = createArray();
+        init(initPattern);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
+        canvasDraw(myCells, ctx);
+    });
+
+    document.getElementById('startBtn').click();
+
+</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Aide</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous pouvez démarrer la simulation avec "Start" et la stopper avec "Stop". Le bouton "Reset" permet
+                    de revenir à la situation initiale.</p>
+                <p>Choisissez un motif initial dans le menu déroulant.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</body>
+</html>
