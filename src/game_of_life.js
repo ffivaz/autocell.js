@@ -3,14 +3,16 @@
  **/
 var createArray = function (nrows, ncols) {
 
-    var someLine = [];
-    for (var i = 0; i < ncols; i++) {
-        someLine.push(0);
+    var i;
+
+    var someLines = [];
+    for (i = 0; i < ncols; i++) {
+        someLines.push(0);
     }
 
     var someCells = [];
-    for (var i = 0; i < nrows; i++) {
-        someCells.push(someLine.slice());
+    for (i = 0; i < nrows; i++) {
+        someCells.push(someLines.slice());
     }
 
     return someCells;
