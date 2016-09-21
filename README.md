@@ -3,7 +3,7 @@ Cellular automatas in Javascript
 
 ## How to use
 
-It's simple as that :
+It's simple as that...
 
 Load functions in your html headers :
 
@@ -40,3 +40,9 @@ myTimer = setInterval(function () {
 
 Change 250 to any time (in milliseconds) you want a step to last.
 
+You can flush the canvas (for instance to draw a new board) with:
+
+``javascript`
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+myGOLObject.canvasDraw();
+```

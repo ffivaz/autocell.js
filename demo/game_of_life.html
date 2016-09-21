@@ -10,8 +10,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../src/helpers.js"></script>
-    <script src="../src/initArrays.js"></script>
     <script src="../src/game_of_life.js"></script>
 </head>
 <body>
@@ -73,7 +71,7 @@
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
     //canvasDraw(myCells, ctx);
-    myGOLObject.canvasDraw();
+    //myGOLObject.canvasDraw();
 
     var myTimer;
     document.getElementById('startBtn').addEventListener('click', function () {

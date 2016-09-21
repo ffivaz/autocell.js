@@ -97,10 +97,11 @@ var gameOfLife = function (nrows, ncols, canvas, context, patternFile) {
     /**
      * Draws (or redraws) the canvas from a array of arrays (cells)
      **/
-    this.canvasDraw = function () {
+    var canvasDraw = function () {
 
         var col = 0;
-        this.cells.forEach(function (line) {
+
+        that.cells.forEach(function (line) {
             var i = 0;
             line.forEach(function (pixel) {
                 if (pixel == 0) {
@@ -134,7 +135,7 @@ var gameOfLife = function (nrows, ncols, canvas, context, patternFile) {
                 that.cells[e[1] + someCenter[1] - Math.round(data.maxy / 2)][e[0] + someCenter[0] - Math.round(data.maxx / 2)] = 1;
             })
         }).success(function () {
-            that.canvasDraw(that.cells, context)
+            canvasDraw(that.cells, context)
         })
     };
 
@@ -177,7 +178,7 @@ var gameOfLife = function (nrows, ncols, canvas, context, patternFile) {
     this.run = function () {
         nextGen(that.cells);
         context.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
-        that.canvasDraw(that.cells, context);
+        canvasDraw(that.cells, context);
     };
 
 };
