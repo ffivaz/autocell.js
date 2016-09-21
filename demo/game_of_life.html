@@ -94,10 +94,7 @@
             document.getElementById('startBtn').innerHTML = 'Start';
             document.getElementById('startBtn').className = 'btn btn-success';
         }
-        myCells = createArray();
-        initArray(myCells, initPattern);
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
-        canvasDraw(myCells, ctx);
+        myGOLObject.reset();
     });
 
     //document.getElementById('startBtn').click();

@@ -40,9 +40,9 @@ myTimer = setInterval(function () {
 
 Change 250 to any time (in milliseconds) you want a step to last.
 
-You can flush the canvas (for instance to draw a new board) with:
+You can flush the canvas (for instance to draw a new board) and reset the board with:
 
-``javascript`
+```javascript
 ctx.clearRect(0, 0, canvas.width, canvas.height);
-myGOLObject.canvasDraw();
+myGOLObject.reset();
 ```
