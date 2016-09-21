@@ -181,6 +181,9 @@ var gameOfLife = function (nrows, ncols, canvas, context, patternFile) {
         canvasDraw(that.cells, context);
     };
 
+    /**
+     * Resets the cells, reloads the json file and redraws the canvas
+     */
     this.reset = function () {
         this.cells = createArray(nrows, ncols);
         initArray(context, this.cells, patternFile);
