@@ -29,16 +29,17 @@ And in a script, put the init code. Initial patterns are available in the data d
 </script>
 ```
 
-To cycle through the steps, set up a timer (in the same script, under the code above):
+To cycle through the steps, set up a timer (in the same script, under the code above). Change 250 to any time (in milliseconds) you want a step to last.
 
 ```javascript
 var myTimer;
 myTimer = setInterval(function () {
     myGOLObject.run();
 }, 250);
-```
 
-Change 250 to any time (in milliseconds) you want a step to last.
+// You can stop the timer with:
+clearInterval(myTimer);
+```
 
 You can flush the canvas (for instance to draw a new board) and reset the board with:
 
