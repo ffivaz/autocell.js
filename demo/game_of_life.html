@@ -54,9 +54,13 @@
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext("2d");
 
-    var myCells = createArray(40, 72);
-    var initPattern = 'glider';
-    if (location.search != '') {
+    var myGOLObject = new gameOfLife(40, 72, canvas, ctx, '../data/gosper-glider-gun.json');
+
+    //var myCells = createArray(40, 72);
+    //initArray(ctx, myCells, '../data/gosper-glider-gun.json');
+
+    //var initPattern = 'glider';
+    /*if (location.search != '') {
         initPattern = location.search.substring(1); // If there is an URL parameter, initial pattern gets the name after the ?
         // Change selector content if URL parameter not null
         document.getElementById('patternList').value = initPattern;
@@ -64,19 +68,19 @@
 
     document.getElementById('patternList').addEventListener('change', function () {
         window.location.href = 'game_of_life.html?' + document.getElementById('patternList').value;
-    });
+    });*/
 
-    initArray(myCells, initPattern); // There you can choose the initial pattern: acorn, eight-in-line, blinker, etc.
 
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
-    canvasDraw(myCells, ctx);
+    //canvasDraw(myCells, ctx);
+    myGOLObject.canvasDraw();
 
     var myTimer;
     document.getElementById('startBtn').addEventListener('click', function () {
         if (document.getElementById('startBtn').innerHTML == 'Start') {
             myTimer = setInterval(function () {
-                run();
-            }, 500);
+                myGOLObject.run();
+            }, 250);
             document.getElementById('startBtn').innerHTML = 'Stop';
             document.getElementById('startBtn').className = 'btn btn-danger';
         } else {
@@ -93,12 +97,12 @@
             document.getElementById('startBtn').className = 'btn btn-success';
         }
         myCells = createArray();
-        init(initPattern);
+        initArray(myCells, initPattern);
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Flush canvas
         canvasDraw(myCells, ctx);
     });
 
-    document.getElementById('startBtn').click();
+    //document.getElementById('startBtn').click();
 
 </script>
 

@@ -1,0 +1,10 @@
+{
+  "name": "blinker",
+  "maxy": 2,
+  "maxx": 0,
+  "coordinates": [
+    [0,0],
+    [1,0],
+    [2,0]
+  ]
+}

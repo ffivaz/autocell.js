@@ -3,6 +3,7 @@
  * -------------
  * This file contains a set of initial situations.
  * TODO: create pattern around a center of canvas (not hard coded as it is now)
+ * TODO: move to JSON ?
  */
 
 var initArray = function (someCells, type) {
