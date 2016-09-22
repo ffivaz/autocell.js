@@ -19,7 +19,7 @@ In your html code, set a canvas with any width and height:
 <canvas id="canvas" width="800" height="500"></canvas>
 ```
 
-And in a script, put the init code. Initial patterns are available in the data directory. Each file is JSON coded. In the example below, the gosper-glider-gun.json file is assumed to be in the same directory as you html and js files. 
+And in a script, put the init code. Initial patterns are available in the data directory. Each file is JSON coded. In the example below, the gosper-glider-gun.json file is assumed to be in the same directory as your html and javascript files. 
 
 ```html
 <script>
